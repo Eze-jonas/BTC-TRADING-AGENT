@@ -1,20 +1,41 @@
-from scripts.states.portfolio import portfolio
+from data.histo_data_loader import load_initial_data
+
+from scripts.states.live_state import live_state
 from scripts.values.portfolio_value import portfolio_value
 
-from scripts.executor.execution import buy
-from scripts.executor.execution import sell
+from scripts.engine.process_candle import process_candle
 
 
-buy(portfolio, 50000, 1000)
+# =========================
+# 1. LOAD DATASET
+# =========================
+df = load_initial_data()
 
-print(portfolio)
-print(portfolio_value(portfolio))
 
-portfolio["current_price"] = 55000
+# =========================
+# 2. INIT PORTFOLIO STATE
+# =========================
+live_state["current_price"] = df.iloc[0]["close"]
 
-print(portfolio_value(portfolio))
 
-sell(portfolio, 55000)
+# =========================
+# 3. RUN BACKTEST LOOP
+# =========================
+for _, candle in df.iterrows():
 
-print(portfolio)
-print(portfolio_value(portfolio))
+    # send each candle into engine
+    process_candle(candle)
+
+    # OPTIONAL: live valuation print
+    value = portfolio_value(live_state)
+    print(f"Portfolio Value: {value}")
+
+
+# =========================
+# 4. FINAL OUTPUT
+# =========================
+print("\nFINAL PORTFOLIO:")
+print(live_state)
+
+print("\nFINAL VALUE:")
+print(portfolio_value(live_state))
