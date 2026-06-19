@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.pyc
+
+# Virtual environments
+venv/
+BTC/
+
+# Logs
+*.log
+
+# IDE
+.vscode/
+.idea/
+
+# Jupyter
+notebook/
+system_archtecture.md
+
+# Environment files
+.env
+
+# Data files
+data/*.csv
