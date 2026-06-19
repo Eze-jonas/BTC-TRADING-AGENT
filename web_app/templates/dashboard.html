@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <title>BTC Trading Bot Dashboard</title>
+
+    <!-- LINK EXTERNAL CSS -->
+    <link rel="stylesheet" href="/static/dashboard.css">
+</head>
+
+<body class="bg-dark text-white">
+
+<div class="container py-4 d-flex justify-content-center">
+
+    <div class="w-100 border border-secondary rounded-3 p-4 bg-dark" style="max-width: 100vw;">
+
+        <!-- HEADER -->
+        <div class="text-center mb-4">
+            <h1 class="fw-bold">BTC Trading Bot</h1>
+        </div>
+
+        <!-- CONTROL PANEL -->
+        <div class="d-flex justify-content-center align-items-center gap-3 mb-4">
+
+        <button class="btn btn-success start-btn" onclick="startSystem()">
+            START
+            </button>
+
+        <button class="btn btn-danger stop-btn" onclick="stopSystem()">
+            STOP
+        </button>
+
+            <span id="status" class="badge bg-secondary status-badge">
+                STATUS: STOPPED
+            </span>
+
+            <div class="text-start">
+                <h5 class="mb-0">
+                    Runtime:
+                    <span id="runtime">0s</span>
+                </h5>
+            </div>
+
+        </div>
+
+        <!-- MAIN GRID -->
+        <div class="row">
+
+            <!-- LEFT: DEBUG -->
+            <div class="col-md-3 panel-box">
+
+                <h6 class="fw-bold text-info text-center mb-3">DEBUG</h6>
+
+                <div class="card bg-dark border border-secondary text-white flex-grow-1">
+
+                    <div class="card-body p-3">
+
+                        <table class="table table-dark table-sm mb-0">
+                            <tbody>
+                                <tr><td>Momentum</td><td id="dbg_momentum">0</td></tr>
+                                <tr><td>SMA %</td><td id="dbg_sma">0</td></tr>
+                                <tr><td>RSI</td><td id="dbg_rsi">0</td></tr>
+                                <tr><td>Signal</td><td id="dbg_signal">--</td></tr>
+                                <tr><td>Fear & Greed</td><td id="dbg_fg">0</td></tr>
+                                <tr><td>ATR</td><td id="dbg_atr">0</td></tr>
+                                <tr><td>Stop Loss</td><td id="dbg_sl">0</td></tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- CENTER: METRICS -->
+            <div class="col-md-5 panel-box">
+
+                <h6 class="fw-bold text-light text-center mb-3">
+                    TRADES / PORTFOLIO / METRICS
+                </h6>
+
+                <!-- ROW 1 -->
+                <div class="row text-center">
+                    <div class="col-md-4 mb-3">
+                        <div class="card bg-secondary text-white">
+                            <div class="card-body p-2">
+                                <h6>Portfolio Value</h6>
+                                <h4 id="portfolio_value">0</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <div class="card bg-secondary text-white">
+                            <div class="card-body p-2">
+                                <h6>Cash</h6>
+                                <h4 id="cash">0</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <div class="card bg-secondary text-white">
+                            <div class="card-body p-2">
+                                <h6>BTC Holdings</h6>
+                                <h4 id="btc">0</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ROW 2 (FIXED STRUCTURE) -->
+                <div class="row text-center">
+
+                    <div class="col-md-3 mb-3">
+                        <div class="card bg-secondary text-white">
+                            <div class="card-body p-2">
+                                <h6>Price</h6>
+                                <h4 id="price">0</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <div class="card bg-secondary text-white">
+                            <div class="card-body p-2">
+                                <h6>Trades</h6>
+                                <h4 id="trades">0</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <div class="card bg-secondary text-white">
+                            <div class="card-body p-2">
+                                <h6>Profits</h6>
+                                <h4 id="profits">0</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <div class="card bg-secondary text-white">
+                            <div class="card-body p-2">
+                                <h6>Candles</h6>
+                                <h4 id="candle_count">0</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- ROW 3 -->
+                <div class="row text-center flex-grow-1">
+
+                    <div class="col-md-3 mb-3">
+                        <div class="card bg-secondary text-white">
+                            <div class="card-body p-2">
+                                <h6>Wins</h6>
+                                <h4 id="wins" class="fw-bold wins-text">0</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <div class="card bg-secondary text-white">
+                            <div class="card-body p-2">
+                                <h6>Losses</h6>
+                                <h4 id="losses" class="fw-bold losses-text">0</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <div class="card bg-secondary text-white">
+                            <div class="card-body p-2">
+                                <h6>Sharpe R.</h6>
+                                <h4 id="sharpe_ratio">0</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <div class="card bg-secondary text-white">
+                            <div class="card-body p-2">
+                                <h6>Max DD</h6>
+                                <h4 id="max_dd">0</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- RIGHT: TRANSACTIONS -->
+            <div class="col-md-4 panel-box">
+
+                <h6 class="fw-bold text-warning text-center mb-3">
+                    TRANSACTIONS
+                </h6>
+
+                <div class="card bg-dark border border-secondary text-white flex-grow-1">
+
+                    <div class="card-body p-2">
+
+                        <div class="scroll-table">
+
+                            <table class="table table-dark table-sm table-hover mb-0">
+
+                                <thead>
+                                    <tr>
+                                        <th>Type</th>
+                                        <th>Price</th>
+                                        <th>Qty</th>
+                                        <th>PnL</th>
+                                        <th>Idx</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody id="tx_table"></tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ========================= -->
+        <!-- EQUITY CURVE (WORKING) -->
+        <!-- ========================= -->
+        <div class="mt-4">
+
+            <h5 class="text-center text-info fw-bold mb-3">
+                EQUITY CURVE
+            </h5>
+
+            <div class="card bg-dark border border-secondary p-3">
+
+                <canvas id="equityChart" height="120"></canvas>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script src="/static/dashboard.js"></script>
+
+</body>
+</html>

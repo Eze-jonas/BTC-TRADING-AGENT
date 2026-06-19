@@ -1,0 +1,106 @@
+thead th {
+    position: sticky;
+    top: 0;
+    background: #212529;
+    z-index: 2;
+}
+
+/* START BUTTON */
+.start-btn {
+    height: 28px;      /* controls height */
+    padding: 0 12px;   /* controls width */
+    line-height: 1;
+}
+
+/* STOP BUTTON */
+.stop-btn {
+    height: 28px;
+    padding: 0 12px;
+    line-height: 1;
+}
+
+.start-btn,
+.stop-btn,
+.status-badge {
+    font-weight: 700 !important;
+}
+
+/* STATUS BADGE */
+.status-badge {
+    height: 26px;
+    padding: 0 12px;
+    line-height: 24px;
+    font-weight: 400 !important;
+}
+
+
+/* =========================
+   FIX: equal panel height
+   ========================= */
+.panel-box {
+    height: 285px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* prevent Bootstrap cards from stretching unpredictably */
+.panel-box .card {
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+.card h6 {
+    font-size: 0.8rem;
+}
+
+.card h4 {
+    font-size: 1rem;
+}
+
+/* center column must also respect fixed height */
+.col-md-6.panel-box {
+    overflow: hidden;
+}
+
+/* =========================
+   TRANSACTION SCROLL AREA
+   ========================= */
+.scroll-table {
+    max-height: 260px;   /* controls when scroll appears */
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* =========================
+   TABLE FIX (important)
+   ========================= */
+table {
+    table-layout: fixed;
+    width: 100%;
+}
+
+.table-sm td,
+.table-sm th {
+    padding: 2px 4px !important;
+    font-size: 13px;
+}
+
+td, th {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* =========================
+   COLOR FIXES
+   ========================= */
+.wins-text {
+    color: #00ff66;
+    font-weight: 700;
+}
+
+.losses-text {
+    color: #ff4444;
+    font-weight: 700;
+}
