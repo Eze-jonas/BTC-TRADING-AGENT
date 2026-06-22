@@ -3,13 +3,18 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 import asyncio
 
-from data.histo_data_loader import load_initial_data
-from scripts.engine.live_runner import run_engine
+from data.historical_data_loader_and_processor import (
+    load_and_process_historical_data
+)
+from data.stream_candle_fetcher_and_processor import fetch_and_process_stream_candle
+
+from scripts.logics.logics_runner import logics_runner
 from scripts.states.live_state import live_state
-from scripts.engine.engine_controller import (
+from scripts.controllers.bot_controller import (
     start_live_system,
     stop_live_system
 )
+
 from datetime import datetime
 
 app = FastAPI()
@@ -37,11 +42,27 @@ async def start():
 
     global task
 
-    df = load_initial_data()
+    # =========================
+    # LOAD + PROCESS HISTORICAL DATA
+    # =========================
+    h_df = load_and_process_historical_data()
+
+    print("HDF SHAPE:", h_df.shape)
+    print(h_df.tail())
+
+    # =========================
+    # ATTACH TO LIVE STATE
+    # =========================
+    live_state["df"] = h_df
 
     start_live_system()
 
-    task = asyncio.create_task(run_engine(df))
+    # =========================
+    # START STREAMING LOGICS
+    # =========================
+    task = asyncio.create_task(
+        logics_runner(fetch_and_process_stream_candle)
+    )
 
     return {"status": "started"}
 
@@ -96,7 +117,9 @@ async def ws(websocket: WebSocket):
                 "last_trade": live_state.get("trades", [])[-1]
                     if live_state.get("trades") else None,
 
-                # ✅ ADD THIS FOR TABLE
+                # =========================
+                # TRADES TABLE
+                # =========================
                 "trades": live_state.get("trades", []),
 
                 "candle_count": live_state.get("candle_count", 0),
@@ -112,6 +135,7 @@ async def ws(websocket: WebSocket):
                 "portfolio_value": live_state.get("portfolio_value", 0),
                 "wins": live_state.get("wins", 0),
                 "losses": live_state.get("losses", 0),
+                "win_rate": live_state.get("win_rate", 0),
                 "sharpe_ratio": live_state.get("sharpe_ratio", 0),
                 "max_dd": live_state.get("max_dd", 0),
                 "equity_curve": live_state.get("equity_curve", [])[-500:],
@@ -122,5 +146,6 @@ async def ws(websocket: WebSocket):
 
     except Exception:
         pass
+
 
 # uvicorn web_app.system_app:app --reload --port 9000

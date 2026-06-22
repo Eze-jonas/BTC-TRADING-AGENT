@@ -1,17 +1,18 @@
+Chart.register(ChartDataLabels);
+
+// =========================
+// START / STOP SYSTEM
+// =========================
 async function startSystem() {
-    await fetch("/start", {
-        method: "POST"
-    });
+    await fetch("/start", { method: "POST" });
 }
 
 async function stopSystem() {
-    await fetch("/stop", {
-        method: "POST"
-    });
+    await fetch("/stop", { method: "POST" });
 }
 
 // =========================
-// EQUITY CURVE INIT (NEW)
+// EQUITY CURVE INIT
 // =========================
 const ctx = document.getElementById("equityChart").getContext("2d");
 
@@ -33,28 +34,85 @@ const equityChart = new Chart(ctx, {
         responsive: true,
         maintainAspectRatio: false,
         scales: {
-            x: {
-                display: false
-            },
+            x: { display: false },
             y: {
-                ticks: {
-                    color: "#ffffff"
-                }
+                ticks: { color: "#ffffff" }
             }
         },
+        plugins: {
+            datalabels: {
+                display: false
+            },
+            legend: {
+                 display: false
+            }
+        }
+    }
+});
+
+
+// =========================
+// PIE CHART (WIN / LOSS)
+// =========================
+const pieCanvas = document.getElementById("winLossChart");
+
+if (!pieCanvas) {
+    console.error("winLossChart canvas not found");
+}
+
+const winLossChart = new Chart(pieCanvas.getContext("2d"), {
+    type: "pie",
+    data: {
+        labels: ["Wins", "Losses"],
+        datasets: [{
+            data: [1, 1],
+            backgroundColor: ["#00ff66", "#ff4444"],
+            borderColor: "#222",
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+
         plugins: {
             legend: {
                 labels: {
                     color: "#ffffff"
+                }
+            },
+
+            // =========================
+            // % LABELS ON PIE CHART
+            // =========================
+            datalabels: {
+                color: "#ffffff",
+                font: {
+                    weight: "bold"
+                },
+                formatter: (value, context) => {
+
+                    const data = context.chart.data.datasets[0].data;
+                    const total = data.reduce((a, b) => a + b, 0);
+
+                    if (total === 0) return "0%";
+
+                    const percent = (value / total) * 100;
+
+                    return percent.toFixed(0) + "%";
                 }
             }
         }
     }
 });
 
+
+// =========================
+// WEBSOCKET
+// =========================
 const ws = new WebSocket("ws://127.0.0.1:9000/ws");
 
-ws.onmessage = function(event) {
+ws.onmessage = function (event) {
 
     const data = JSON.parse(event.data);
 
@@ -65,6 +123,7 @@ ws.onmessage = function(event) {
         `STATUS: ${data.status}`;
 
     const statusEl = document.getElementById("status");
+
     statusEl.className = data.status === "RUNNING"
         ? "badge bg-success fs-6 px-3 py-2"
         : "badge bg-secondary fs-6 px-3 py-2";
@@ -126,7 +185,6 @@ ws.onmessage = function(event) {
     const table = document.getElementById("tx_table");
 
     if (table) {
-
         table.innerHTML = "";
 
         (data.trades || []).slice().reverse().forEach(t => {
@@ -156,31 +214,43 @@ ws.onmessage = function(event) {
     }
 
     // =========================
-    // EQUITY CURVE UPDATE (SAFE RESET)
+    // EQUITY CURVE UPDATE
     // =========================
     const curve = data.equity_curve;
 
     if (curve && curve.length > 0) {
 
-    // 🔥 ADD THIS HERE (RESET SAFETY)
         if (curve.length < equityChart.data.datasets[0].data.length) {
-
-        // reset chart if backend restarted
-        equityChart.data.labels = [];
-        equityChart.data.datasets[0].data = [];
-    }
+            equityChart.data.labels = [];
+            equityChart.data.datasets[0].data = [];
+        }
 
         const lastIndex = equityChart.data.datasets[0].data.length;
 
         if (curve.length > lastIndex) {
 
             for (let i = lastIndex; i < curve.length; i++) {
-
                 equityChart.data.labels.push(i);
                 equityChart.data.datasets[0].data.push(curve[i]);
-        }
+            }
 
-        equityChart.update();
+            equityChart.update();
+        }
     }
-}
+
+    // =========================
+    // PIE CHART UPDATE
+    // =========================
+    const wins = data.wins ?? 0;
+    const losses = data.losses ?? 0;
+
+    const total = wins + losses;
+
+    if (total > 0) {
+        winLossChart.data.datasets[0].data = [wins, losses];
+    } else {
+        winLossChart.data.datasets[0].data = [1, 1];
+    }
+
+    winLossChart.update();
 };

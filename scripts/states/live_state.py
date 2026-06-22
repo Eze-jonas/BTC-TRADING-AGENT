@@ -4,10 +4,10 @@ live_state = {
     "btc_holdings": 0.0,
 
     "current_price": 0.0,
+    "previous_close": None,
     "entry_price": 0.0,
 
     "trades": [],
-
     "equity_curve": [],
 
     "candle_count": 0,
@@ -15,13 +15,16 @@ live_state = {
     "status": "STOPPED",
     "start_time": None,
 
-    # =========================
-    # METRICS (ADD THESE)
-    # =========================
     "portfolio_value": 0.0,
+
+    # already used
     "wins": 0,
     "losses": 0,
+    "win_rate": 0.0,
+
     "sharpe_ratio": 0.0,
     "max_dd": 0.0,
-    "profits": 0.0
+    "profits": 0.0,
+
+    "df": None
 }

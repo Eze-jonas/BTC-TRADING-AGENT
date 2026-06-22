@@ -238,17 +238,45 @@
         </div>
 
         <!-- ========================= -->
-        <!-- EQUITY CURVE (WORKING) -->
+        <!-- BOTTOM SECTION SPLIT -->
         <!-- ========================= -->
         <div class="mt-4">
 
-            <h5 class="text-center text-info fw-bold mb-3">
-                EQUITY CURVE
-            </h5>
+            <div class="row">
 
-            <div class="card bg-dark border border-secondary p-3">
+                <!-- ========================= -->
+                <!-- 70% EQUITY CURVE -->
+                <!-- ========================= -->
+                <div class="col-md-8">
 
-                <canvas id="equityChart" height="120"></canvas>
+                    <h5 class="text-center text-info fw-bold mb-3">
+                        EQUITY CURVE
+                    </h5>
+
+                    <div class="card bg-dark border border-secondary p-3">
+
+                        <canvas id="equityChart" height="120"></canvas>
+
+                    </div>
+
+                </div>
+
+                <!-- ========================= -->
+                <!-- 30% WIN/LOSS PIE CHART -->
+                <!-- ========================= -->
+                <div class="col-md-4">
+
+                    <h5 class="text-center text-success fw-bold mb-3">
+                        WIN / LOSS RATIO
+                    </h5>
+
+                    <div class="card bg-dark border border-secondary p-3">
+
+                        <canvas id="winLossChart" height="120"></canvas>
+
+                    </div>
+
+                </div>
 
             </div>
 
@@ -260,7 +288,7 @@
 
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
 <script src="/static/dashboard.js"></script>
 
 </body>
