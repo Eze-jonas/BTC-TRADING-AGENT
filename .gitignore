@@ -23,3 +23,10 @@ system_archtecture.md
 # Data files
 data/*.csv
 data/
+deleted:    scripts/analytics/metrics.py
+deleted:    scripts/engine/engine_controller.py
+deleted:    scripts/engine/live_runner.py
+deleted:    scripts/engine/process_candle.py
+deleted:    scripts/executor/execution.py
+deleted:    scripts/states/portfolio.py
+deleted:    scripts/values/portfolio_value.py
