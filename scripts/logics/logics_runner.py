@@ -4,6 +4,7 @@ from scripts.states.live_state import live_state
 
 from scripts.logics.live_state_dataframe_updater import update_live_state_dataframe
 from scripts.logics.trade_strategy_logic import trade_strategy
+from data.feature_engineering import add_momentum
 
 from scripts.logics.metrics_logic import (
     update_portfolio_value,
@@ -35,12 +36,19 @@ async def logics_runner(stream_callback):
             break
 
         # =========================
-        # PHASE 1: DATA UPDATE
+        # PHASE 1: UPDATE DATA
         # =========================
         update_live_state_dataframe(candle)
 
         # =========================
-        # PHASE 2: STRATEGY EXECUTION
+        # FEATURE ENGINEERING
+        # =========================
+        df = live_state["df"]
+        df = add_momentum(df)
+        live_state["df"] = df
+
+        # =========================
+        # PHASE 2: STRATEGY
         # =========================
         trade_strategy(candle)
 
@@ -50,7 +58,7 @@ async def logics_runner(stream_callback):
         live_state["candle_count"] += 1
 
         # =========================
-        # PHASE 3: METRICS UPDATE
+        # PHASE 3: METRICS
         # =========================
         update_portfolio_value()
         update_win_rate()
@@ -59,17 +67,13 @@ async def logics_runner(stream_callback):
         update_max_dd()
         update_profits()
 
-        # =========================
-        # DEBUG OUTPUT
-        # =========================
+        # DEBUG
         print("PORTFOLIO:", live_state.get("portfolio_value"))
         print("WINS:", live_state.get("wins"))
 
-        await asyncio.sleep(0)  # keeps event loop responsive
+        await asyncio.sleep(0)
 
     print("LOGICS RUNNER FINISHED")
-
-
 # =========================
 # STOP FUNCTION
 # =========================

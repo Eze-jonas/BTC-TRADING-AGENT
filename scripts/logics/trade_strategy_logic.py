@@ -1,33 +1,43 @@
 from scripts.states.live_state import live_state
 from scripts.logics.trade_logic import buy, sell
+from scripts.indicators.indicators_classification import classify_momentum
+from scripts.configurations.parameter_configuration import config
 
 
 def trade_strategy(candle):
 
     price = candle["close"]
-    print(f"PROCESSING: {price}")
 
-    previous_close = live_state.get("previous_close")
+    latest_df = live_state["df"]
 
-    # initialize first time
-    if previous_close is None:
-        live_state["previous_close"] = price
-        return
+    momentum = latest_df["momentum"].iloc[-1]
 
-    drop = (previous_close - price) / previous_close * 100
-    rise = (price - previous_close) / previous_close * 100
+    regime = classify_momentum(momentum)
+
+    live_state["momentum_regime"] = regime
+
+    print(
+        f"PRICE={price} | "
+        f"MOMENTUM={momentum:.4f} | "
+        f"REGIME={regime}"
+    )
 
     is_long = live_state.get("btc_holdings", 0) > 0
 
-    # BUY (only if NOT already in position)
-    if drop >= 0.005 and not is_long:
+    # =========================
+    # ENTRY
+    # =========================
+    if regime == "BULLISH" and not is_long:
 
-        buy(live_state, price, 1000)
+        buy(
+            live_state,
+            price,
+            config["position_size"]
+        )
 
-    # SELL (only if in position)
-    elif rise >= 0.005 and is_long:
+    # =========================
+    # EXIT
+    # =========================
+    elif regime == "BEARISH" and is_long:
 
         sell(live_state, price)
-
-    # UPDATE PREVIOUS CLOSE
-    live_state["previous_close"] = price

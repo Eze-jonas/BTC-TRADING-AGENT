@@ -179,6 +179,21 @@ ws.onmessage = function (event) {
     document.getElementById("profits").innerText =
         Number(data.profits ?? 0).toFixed(2);
 
+    // DEBUGS
+    const momentumEl = document.getElementById("dbg_momentum");
+
+    momentumEl.innerText = data.momentum ?? "--";
+
+    if (data.momentum === "BULLISH") {
+        momentumEl.style.color = "#00ff66";
+    }
+    else if (data.momentum === "BEARISH") {
+        momentumEl.style.color = "#ff4444";
+    }
+    else {
+        momentumEl.style.color = "#ffffff";
+    }
+
     // =========================
     // TRANSACTION TABLE
     // =========================

@@ -7,7 +7,7 @@ from data.historical_data_loader_and_processor import (
     load_and_process_historical_data
 )
 from data.stream_candle_fetcher_and_processor import fetch_and_process_stream_candle
-
+from data.feature_engineering import add_momentum
 from scripts.logics.logics_runner import logics_runner
 from scripts.states.live_state import live_state
 from scripts.controllers.bot_controller import (
@@ -47,13 +47,16 @@ async def start():
     # =========================
     h_df = load_and_process_historical_data()
 
-    print("HDF SHAPE:", h_df.shape)
-    print(h_df.tail())
+    # FEATURE ENGINEERING (ADD THIS)
+    df = add_momentum(h_df)
+
+    print("HDF SHAPE:", df.shape)
+    print(df.tail())
 
     # =========================
     # ATTACH TO LIVE STATE
     # =========================
-    live_state["df"] = h_df
+    live_state["df"] = df
 
     start_live_system()
 
@@ -140,6 +143,9 @@ async def ws(websocket: WebSocket):
                 "max_dd": live_state.get("max_dd", 0),
                 "equity_curve": live_state.get("equity_curve", [])[-500:],
                 "profits": live_state.get("profits", 0),
+
+                # DEBUGS
+                "momentum": live_state.get("momentum_regime", "NEUTRAL"),
             })
 
             await asyncio.sleep(1)
