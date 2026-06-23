@@ -4,7 +4,11 @@ from scripts.states.live_state import live_state
 
 from scripts.logics.live_state_dataframe_updater import update_live_state_dataframe
 from scripts.logics.trade_strategy_logic import trade_strategy
-from data.feature_engineering import add_momentum
+from data.feature_engineering import ( 
+    add_momentum,
+    add_sma
+                                      
+)
 
 from scripts.logics.metrics_logic import (
     update_portfolio_value,
@@ -45,6 +49,7 @@ async def logics_runner(stream_callback):
         # =========================
         df = live_state["df"]
         df = add_momentum(df)
+        df = add_sma(df)
         live_state["df"] = df
 
         # =========================

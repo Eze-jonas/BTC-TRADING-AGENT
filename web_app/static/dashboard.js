@@ -192,6 +192,21 @@ ws.onmessage = function (event) {
     }
     else {
         momentumEl.style.color = "#ffffff";
+    } 
+
+    // SMA_PCA
+    const smaEl = document.getElementById("dbg_sma");
+
+    smaEl.innerText = data.sma_pct ?? "NEUTRAL";
+
+    if (data.sma_pct === "BULLISH") {
+        smaEl.style.color = "lime";
+    }
+    else if (data.sma_pct === "BEARISH") {
+        smaEl.style.color = "red";
+    }
+    else {
+        smaEl.style.color = "white";
     }
 
     // =========================

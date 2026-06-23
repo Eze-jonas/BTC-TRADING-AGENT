@@ -7,7 +7,10 @@ from data.historical_data_loader_and_processor import (
     load_and_process_historical_data
 )
 from data.stream_candle_fetcher_and_processor import fetch_and_process_stream_candle
-from data.feature_engineering import add_momentum
+from data.feature_engineering import (
+    add_momentum,
+    add_sma
+    )
 from scripts.logics.logics_runner import logics_runner
 from scripts.states.live_state import live_state
 from scripts.controllers.bot_controller import (
@@ -49,6 +52,7 @@ async def start():
 
     # FEATURE ENGINEERING (ADD THIS)
     df = add_momentum(h_df)
+    df = add_sma(df)
 
     print("HDF SHAPE:", df.shape)
     print(df.tail())
@@ -146,6 +150,8 @@ async def ws(websocket: WebSocket):
 
                 # DEBUGS
                 "momentum": live_state.get("momentum_regime", "NEUTRAL"),
+                "sma_pct": live_state.get("sma_regime", "NEUTRAL"),
+            
             })
 
             await asyncio.sleep(1)
