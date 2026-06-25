@@ -7,7 +7,7 @@ from data.historical_data_loader_and_processor import (
     load_and_process_historical_data
 )
 from data.stream_candle_fetcher_and_processor import fetch_and_process_stream_candle
-from data.feature_engineering import (
+from scripts.features.feature_engineering import (
     add_momentum,
     add_sma
     )

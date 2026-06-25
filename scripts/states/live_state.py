@@ -6,6 +6,7 @@ live_state = {
     "current_price": 0.0,
     "previous_close": None,
     "entry_price": 0.0,
+    "avg_entry_price": 0.0,
 
     "trades": [],
     "equity_curve": [],
@@ -26,5 +27,8 @@ live_state = {
     "max_dd": 0.0,
     "profits": 0.0,
 
-    "df": None
+    "df": None,
+    "last_dca_price": 0.0,
+    "dca_count": 0,
+    
 }

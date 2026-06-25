@@ -4,9 +4,10 @@ from scripts.states.live_state import live_state
 
 from scripts.logics.live_state_dataframe_updater import update_live_state_dataframe
 from scripts.logics.trade_strategy_logic import trade_strategy
-from data.feature_engineering import ( 
+from scripts.configurations.parameter_configuration import config
+from scripts.features.feature_engineering import ( 
     add_momentum,
-    add_sma
+    add_sma,
                                       
 )
 
@@ -43,6 +44,7 @@ async def logics_runner(stream_callback):
         # PHASE 1: UPDATE DATA
         # =========================
         update_live_state_dataframe(candle)
+        live_state["current_price"] = candle["close"]
 
         # =========================
         # FEATURE ENGINEERING

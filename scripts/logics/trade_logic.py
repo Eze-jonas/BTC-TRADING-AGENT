@@ -13,19 +13,41 @@ def buy(live_state, price, amount):
     live_state["btc_holdings"] += qty
     live_state["current_price"] = price
 
-    # set entry price ALWAYS on buy
-    live_state["entry_price"] = price
+    # =========================
+    # AVERAGE ENTRY PRICE (DCA FIX)
+    # =========================
+    old_qty = live_state["btc_holdings"] - qty
+    old_avg = live_state.get("avg_entry_price", 0.0)
+
+    if old_qty == 0:
+        avg_price = price
+    else:
+        avg_price = (
+            (old_qty * old_avg) + (qty * price)
+        ) / (old_qty + qty)
+
+    live_state["avg_entry_price"] = avg_price
+
+    # =========================
+    # LABEL BUY VS DCA
+    # =========================
+    trade_type = "BUY"
+
+    if live_state.get("is_in_position", False):
+        trade_type = "DCA"
+
+    live_state["is_in_position"] = True
 
     live_state["trades"].append({
-    "type": "BUY",
-    "price": price,
-    "amount": amount,
-    "qty": qty,
-    "pnl": 0.0,
-    "index": live_state["candle_count"]
-})
+        "type": trade_type,
+        "price": price,
+        "amount": amount,
+        "qty": qty,
+        "pnl": 0.0,
+        "index": live_state["candle_count"]
+    })
 
-    print(f"BUY EXECUTED @ {price}")
+    print(f"{trade_type} EXECUTED @ {price}")
 
 
 # SELL LOGIC
@@ -38,7 +60,7 @@ def sell(live_state, price):
 
     proceeds = qty * price
 
-    entry_price = live_state.get("entry_price", price)
+    entry_price = live_state.get("avg_entry_price", price)
     pnl = (price - entry_price) * qty
 
     live_state["cash"] += proceeds
@@ -54,15 +76,16 @@ def sell(live_state, price):
         live_state["losses"] += 1
 
     live_state["trades"].append({
-    "type": "SELL",
-    "price": price,
-    "qty": qty,
-    "proceeds": proceeds,
-    "pnl": pnl,
-    "index": live_state["candle_count"]
-})
+        "type": "SELL",
+        "price": price,
+        "qty": qty,
+        "proceeds": proceeds,
+        "pnl": pnl,
+        "index": live_state["candle_count"]
+    })
 
     print(f"SELL EXECUTED @ {price}")
 
     # reset position state
-    live_state["entry_price"] = 0.0
+    live_state["avg_entry_price"] = 0.0
+    live_state["is_in_position"] = False
