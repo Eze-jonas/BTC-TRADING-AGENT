@@ -43,6 +43,7 @@ def buy(live_state, price, amount, reason="SIGNAL"):
         "amount": amount,
         "qty": qty,
         "pnl": 0.0,
+        "rsi": live_state.get("rsi"),
         "index": live_state["candle_count"]
     })
 
@@ -81,6 +82,7 @@ def sell(live_state, price, exit_reason="SIGNAL"):
         "qty": qty,
         "proceeds": proceeds,
         "pnl": pnl,
+        "rsi": live_state.get("rsi"),
         "index": live_state["candle_count"]
     })
 

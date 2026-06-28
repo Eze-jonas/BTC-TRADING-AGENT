@@ -59,7 +59,9 @@ body {
     height: 60px;
 }
 
-/* TRANSACTION PANEL*/
+/* =========================
+   TRANSACTIONS PANEL FIX
+   ========================= */
 
 .transactions-panel {
     height: 220px;
@@ -67,11 +69,32 @@ body {
     flex-direction: column;
 }
 
+/* IMPORTANT: keep card local ONLY (do NOT make global) */
+.transactions-panel .card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+/* ensure card-body can shrink properly */
+.transactions-panel .card-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
+
+/* scroll container */
 .scroll-table {
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
+    min-height: 0;
 }
+
+
+
 
 
 

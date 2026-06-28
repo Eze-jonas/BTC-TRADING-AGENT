@@ -20,9 +20,10 @@ def trade_strategy(candle):
     sma_pct = latest_df["sma_pct"].iloc[-1]
 
     # =========================
-    # ATR (NEW ADDITION)
+    # ATR + RSI (NEW ADDITION)
     # =========================
     atr = latest_df["atr"].iloc[-1]
+    rsi = latest_df["rsi"].iloc[-1]
 
     momentum_regime = classify_momentum(momentum)
     sma_regime = classify_sma_pct(sma_pct)
@@ -30,12 +31,14 @@ def trade_strategy(candle):
     live_state["momentum_regime"] = momentum_regime
     live_state["sma_regime"] = sma_regime
     live_state["atr"] = atr
+    live_state["rsi"] = rsi
 
     print(
         f"PRICE={price} | "
         f"MOMENTUM={momentum:.4f} | "
         f"SMA_PCT={sma_pct:.4f} | "
         f"ATR={atr:.4f} | "
+        f"RSI={rsi:.2f} | "
         f"MOMENTUM_REGIME={momentum_regime} | "
         f"SMA_REGIME={sma_regime}"
     )
@@ -55,13 +58,26 @@ def trade_strategy(candle):
         return
 
     # =========================
+    # RSI OVERBOUGHT EXIT (SWING ADDITION)
+    # =========================
+    if is_long and rsi > config["rsi_sell_threshold"]:
+
+        print(f"RSI OVERBOUGHT EXIT @ {price}")
+
+        sell(
+            live_state,
+            price,
+            exit_reason="RSI OVERBOUGHT"
+        )
+        return
+
+    # =========================
     # ATR TRAILING STOP LOSS
     # =========================
     if is_long:
 
         entry_price = live_state.get("avg_entry_price", price)
 
-        # initialize or update highest price
         highest_price = live_state.get(
             "highest_price_since_entry",
             entry_price
@@ -71,7 +87,6 @@ def trade_strategy(candle):
             highest_price = price
             live_state["highest_price_since_entry"] = highest_price
 
-        # trailing stop calculation
         stop_loss = highest_price - (
             atr * config["atr_multiplier"]
         )
@@ -87,11 +102,12 @@ def trade_strategy(candle):
             return
 
     # =========================
-    # ENTRY (FIRST BUY ONLY)
+    # ENTRY (SWING VERSION)
     # =========================
     if (
         momentum_regime == "BULLISH"
         and sma_regime == "BULLISH"
+        and rsi < config["rsi_buy_threshold"]
         and not is_long
     ):
 

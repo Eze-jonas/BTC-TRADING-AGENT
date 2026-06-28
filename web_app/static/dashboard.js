@@ -210,6 +210,26 @@ ws.onmessage = function (event) {
     }
 
     // =========================
+    // RSI
+    // =========================
+    const rsiEl = document.getElementById("dbg_rsi");
+
+    const rsi = data.rsi ?? 0;
+
+    rsiEl.innerText = rsi.toFixed(2);
+
+    // color logic (important for swing understanding)
+    if (rsi >= 70) {
+        rsiEl.style.color = "#ff4444"; // overbought
+    }
+    else if (rsi <= 30) {
+        rsiEl.style.color = "#00ff66"; // oversold
+    }
+    else {
+        rsiEl.style.color = "#ffffff"; // neutral zone
+    }
+
+    // =========================
     // TRANSACTION TABLE
     // =========================
     const table = document.getElementById("tx_table");

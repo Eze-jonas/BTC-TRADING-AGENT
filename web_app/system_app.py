@@ -11,7 +11,8 @@ from scripts.configurations.parameter_configuration import config
 from scripts.features.feature_engineering import (
     add_momentum,
     add_sma,
-    add_atr
+    add_atr,
+    add_rsi
     )
 from scripts.logics.logics_runner import logics_runner
 from scripts.states.live_state import live_state
@@ -53,9 +54,10 @@ async def start():
     h_df = load_and_process_historical_data()
 
     # FEATURE ENGINEERING (ADD THIS)
-    df = add_momentum(h_df)
-    df = add_sma(df)
+    df = add_momentum(h_df , config["momentum_window"])
+    df = add_sma(df , config["sma_window"])
     df = add_atr(df, config["atr_window"])
+    df = add_rsi(df, config["rsi_window"])
 
     print("HDF SHAPE:", df.shape)
     print(df.tail())
@@ -120,7 +122,7 @@ async def ws(websocket: WebSocket):
                 "price": live_state.get("current_price", 0),
                 "cash": live_state.get("cash", 0),
                 "btc_holdings": live_state.get("btc_holdings", 0),
-
+                 
                 "trades_count": live_state.get("wins", 0)
                     + live_state.get("losses", 0),
 
@@ -130,7 +132,10 @@ async def ws(websocket: WebSocket):
                 # =========================
                 # TRADES TABLE
                 # =========================
-                "trades": live_state.get("trades", []),
+                "trades": [
+                    {**trade, "display_idx": i + 1}
+                    for i, trade in enumerate(live_state.get("trades", []))
+                ],
 
                 "candle_count": live_state.get("candle_count", 0),
 
@@ -154,6 +159,7 @@ async def ws(websocket: WebSocket):
                 # DEBUGS
                 "momentum": live_state.get("momentum_regime", "NEUTRAL"),
                 "sma_pct": live_state.get("sma_regime", "NEUTRAL"),
+                "rsi": live_state.get("rsi", 0),
             
             })
 
