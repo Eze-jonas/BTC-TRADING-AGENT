@@ -8,7 +8,7 @@ from scripts.configurations.parameter_configuration import config
 from scripts.features.feature_engineering import ( 
     add_momentum,
     add_sma,
-                                      
+    add_atr                                  
 )
 
 from scripts.logics.metrics_logic import (
@@ -52,6 +52,7 @@ async def logics_runner(stream_callback):
         df = live_state["df"]
         df = add_momentum(df)
         df = add_sma(df)
+        df = add_atr(df, config["atr_window"])
         live_state["df"] = df
 
         # =========================

@@ -1,96 +1,84 @@
-thead th {
-    position: sticky;
-    top: 0;
-    background: #212529;
-    z-index: 2;
+/* body setup*/
+body {
+    background-color: #0f0f0f !important;
+    margin: 0;
+    font-family: Arial, sans-serif;
 }
 
-/* START BUTTON */
-.start-btn {
-    height: 28px;      /* controls height */
-    padding: 0 12px;   /* controls width */
-    line-height: 1;
+/* Dashboar*/
+
+.dashboard {
+    width: 100%;
+    max-width: 100vw;
+
+    background-color: #1a1a1a;
+
+    border: 2px solid #6c757d;
+    border-radius: 3px;
+
+    box-sizing: border-box;
 }
 
-/* STOP BUTTON */
-.stop-btn {
+/* CONTROL panel/ RUNTIME*/
+.toolbar-item {
     height: 28px;
+    display: inline-flex;
+    align-items: center;
     padding: 0 12px;
-    line-height: 1;
-}
-
-.start-btn,
-.stop-btn,
-.status-badge {
+    font-size: 12px;
     font-weight: 700 !important;
 }
 
-/* STATUS BADGE */
-.status-badge {
-    height: 26px;
-    padding: 0 12px;
-    line-height: 24px;
-    font-weight: 400 !important;
-}
-
-
-/* =========================
-   FIX: equal panel height
-   ========================= */
-.panel-box {
-    height: 285px;
+/* DEBUG PANEL*/
+.debug-panel {
+    height: 220px;
     display: flex;
     flex-direction: column;
     overflow: hidden;
 }
-
-/* prevent Bootstrap cards from stretching unpredictably */
-.panel-box .card {
-    flex: 1 1 auto;
-    min-height: 0;
+/*TABLES*/
+.table-sm td,
+.table-sm th {
+    font-size: 11px;
 }
 
-.card h6 {
-    font-size: 0.8rem;
+/*METRICS PANEL*/
+.metrics-panel {
+    height: 200px;
 }
 
-.card h4 {
-    font-size: 1rem;
+/*METRICS CARD SIZE*/
+.metrics-card h6 {
+    font-size: 10px;
 }
 
-/* center column must also respect fixed height */
-.col-md-6.panel-box {
-    overflow: hidden;
+.metrics-card h4 {
+    font-size: 12px;
+}
+.metrics-card {
+    height: 60px;
 }
 
-/* =========================
-   TRANSACTION SCROLL AREA
-   ========================= */
+/* TRANSACTION PANEL*/
+
+.transactions-panel {
+    height: 220px;
+    display: flex;
+    flex-direction: column;
+}
+
 .scroll-table {
-    max-height: 260px;   /* controls when scroll appears */
+    flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
 }
 
-/* =========================
-   TABLE FIX (important)
-   ========================= */
-table {
-    table-layout: fixed;
-    width: 100%;
-}
 
-.table-sm td,
-.table-sm th {
-    padding: 2px 4px !important;
-    font-size: 13px;
-}
 
-td, th {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
+
+
+
+
 
 /* =========================
    COLOR FIXES

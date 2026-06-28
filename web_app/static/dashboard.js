@@ -227,6 +227,10 @@ ws.onmessage = function (event) {
                         ${t.type}
                     </td>
 
+                    <td>
+                    ${t.reason || "-"}
+                    </td>
+
                     <td>${Number(t.price || 0).toFixed(2)}</td>
 
                     <td>${Number(t.qty || 0).toFixed(6)}</td>

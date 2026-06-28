@@ -7,9 +7,11 @@ from data.historical_data_loader_and_processor import (
     load_and_process_historical_data
 )
 from data.stream_candle_fetcher_and_processor import fetch_and_process_stream_candle
+from scripts.configurations.parameter_configuration import config
 from scripts.features.feature_engineering import (
     add_momentum,
-    add_sma
+    add_sma,
+    add_atr
     )
 from scripts.logics.logics_runner import logics_runner
 from scripts.states.live_state import live_state
@@ -53,6 +55,7 @@ async def start():
     # FEATURE ENGINEERING (ADD THIS)
     df = add_momentum(h_df)
     df = add_sma(df)
+    df = add_atr(df, config["atr_window"])
 
     print("HDF SHAPE:", df.shape)
     print(df.tail())

@@ -1,5 +1,6 @@
+
 # BUY LOGIC
-def buy(live_state, price, amount):
+def buy(live_state, price, amount, reason="SIGNAL"):
 
     if amount > live_state["cash"]:
         amount = live_state["cash"]
@@ -33,13 +34,11 @@ def buy(live_state, price, amount):
     # =========================
     trade_type = "BUY"
 
-    if live_state.get("is_in_position", False):
-        trade_type = "DCA"
-
     live_state["is_in_position"] = True
 
     live_state["trades"].append({
         "type": trade_type,
+        "reason": reason,
         "price": price,
         "amount": amount,
         "qty": qty,
@@ -51,7 +50,7 @@ def buy(live_state, price, amount):
 
 
 # SELL LOGIC
-def sell(live_state, price):
+def sell(live_state, price, exit_reason="SIGNAL"):
 
     qty = live_state["btc_holdings"]
 
@@ -77,6 +76,7 @@ def sell(live_state, price):
 
     live_state["trades"].append({
         "type": "SELL",
+        "reason": exit_reason,
         "price": price,
         "qty": qty,
         "proceeds": proceeds,
