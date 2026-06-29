@@ -61,4 +61,4 @@ def add_rsi(atr_df: pd.DataFrame, window: int) -> pd.DataFrame:
 
     rsi_df["rsi"] = 100 - (100 / (1 + rs))
 
-    return rsi_df.dropna()
+    return rsi_df

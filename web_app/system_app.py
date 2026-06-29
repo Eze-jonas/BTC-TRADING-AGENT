@@ -160,7 +160,12 @@ async def ws(websocket: WebSocket):
                 "momentum": live_state.get("momentum_regime", "NEUTRAL"),
                 "sma_pct": live_state.get("sma_regime", "NEUTRAL"),
                 "rsi": live_state.get("rsi", 0),
-            
+                
+                # =========================
+                # STRATEGY + REGIME
+                # =========================
+                "selected_strategy": live_state.get("selected_strategy", "UNKNOWN"),
+                "regime": live_state.get("regime", "UNKNOWN"),
             })
 
             await asyncio.sleep(1)

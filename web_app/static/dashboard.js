@@ -50,7 +50,6 @@ const equityChart = new Chart(ctx, {
     }
 });
 
-
 // =========================
 // PIE CHART (WIN / LOSS)
 // =========================
@@ -82,9 +81,6 @@ const winLossChart = new Chart(pieCanvas.getContext("2d"), {
                 }
             },
 
-            // =========================
-            // % LABELS ON PIE CHART
-            // =========================
             datalabels: {
                 color: "#ffffff",
                 font: {
@@ -105,7 +101,6 @@ const winLossChart = new Chart(pieCanvas.getContext("2d"), {
         }
     }
 });
-
 
 // =========================
 // WEBSOCKET
@@ -192,9 +187,9 @@ ws.onmessage = function (event) {
     }
     else {
         momentumEl.style.color = "#ffffff";
-    } 
+    }
 
-    // SMA_PCA
+    // SMA
     const smaEl = document.getElementById("dbg_sma");
 
     smaEl.innerText = data.sma_pct ?? "NEUTRAL";
@@ -218,15 +213,14 @@ ws.onmessage = function (event) {
 
     rsiEl.innerText = rsi.toFixed(2);
 
-    // color logic (important for swing understanding)
     if (rsi >= 70) {
-        rsiEl.style.color = "#ff4444"; // overbought
+        rsiEl.style.color = "#ff4444";
     }
     else if (rsi <= 30) {
-        rsiEl.style.color = "#00ff66"; // oversold
+        rsiEl.style.color = "#00ff66";
     }
     else {
-        rsiEl.style.color = "#ffffff"; // neutral zone
+        rsiEl.style.color = "#ffffff";
     }
 
     // =========================
@@ -247,8 +241,12 @@ ws.onmessage = function (event) {
                         ${t.type}
                     </td>
 
+                    <td style="color:#00d4ff">
+                        ${t.strategy || "UNKNOWN"}
+                    </td>
+
                     <td>
-                    ${t.reason || "-"}
+                        ${t.reason || "-"}
                     </td>
 
                     <td>${Number(t.price || 0).toFixed(2)}</td>

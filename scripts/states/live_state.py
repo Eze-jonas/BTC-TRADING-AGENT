@@ -17,8 +17,6 @@ live_state = {
     "start_time": None,
 
     "portfolio_value": 0.0,
-
-    # already used
     "wins": 0,
     "losses": 0,
     "win_rate": 0.0,
@@ -30,5 +28,8 @@ live_state = {
     "df": None,
     "last_dca_price": 0.0,
     "dca_count": 0,
-    
+
+    # will be filled later dynamically
+    "state_summary": None,
+    "selected_strategy": "DAY",
 }

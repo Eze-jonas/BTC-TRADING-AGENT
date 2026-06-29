@@ -39,6 +39,7 @@ def buy(live_state, price, amount, reason="SIGNAL"):
     live_state["trades"].append({
         "type": trade_type,
         "reason": reason,
+        "strategy": live_state.get("selected_strategy", "UNKNOWN"),
         "price": price,
         "amount": amount,
         "qty": qty,
@@ -78,6 +79,7 @@ def sell(live_state, price, exit_reason="SIGNAL"):
     live_state["trades"].append({
         "type": "SELL",
         "reason": exit_reason,
+        "strategy": live_state.get("selected_strategy", "UNKNOWN"),
         "price": price,
         "qty": qty,
         "proceeds": proceeds,
