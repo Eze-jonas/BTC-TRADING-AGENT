@@ -1,6 +1,6 @@
 config = {
     "position_size": 1000,
-
+    "portfolio_stop_pct": 0.25,
     "dca_drop_pct": 0.0002,
 
     # indicators
@@ -13,4 +13,5 @@ config = {
     # RSI thresholds (SWING LOGIC)
     "rsi_buy_threshold": 65,
     "rsi_sell_threshold": 70
+    
 }

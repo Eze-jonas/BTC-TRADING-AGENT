@@ -8,6 +8,13 @@ from scripts.logics.trade_strategy_logic import trade_strategy
 from scripts.configurations.parameter_configuration import config
 from scripts.logics.regime_logic import detect_regime
 from scripts.logics.strategy_router_logic import strategy_router
+from scripts.logics.llm_prompt_logic import LLMWrapper
+from scripts.logics.llm_strategy_logic import run_llm_strategy
+from scripts.logics.portfolio_risk_logic import check_portfolio_safeguard
+from scripts.logics.market_context_logic import (
+    build_state_summary,
+    build_market_summary
+)
 
 from scripts.features.feature_engineering import (
     add_momentum,
@@ -23,6 +30,7 @@ from scripts.indicators.indicators_classification import (
 
 from scripts.logics.metrics_logic import (
     update_portfolio_value,
+    update_portfolio_pct,
     update_equity_curve,
     update_sharpe,
     update_max_dd,
@@ -31,6 +39,8 @@ from scripts.logics.metrics_logic import (
 )
 
 running = False
+
+llm = LLMWrapper(model="llama3.1")
 
 
 # =========================
@@ -102,28 +112,19 @@ async def logics_runner(stream_callback):
         # STEP 2: MARKET SUMMARY
         # =========================
         try:
-            live_state["state_summary"] = {
-                "momentum": classify_momentum(latest_row["momentum"]),
-                "sma": classify_sma_pct(latest_row["sma_pct"]),
-                "rsi": latest_row["rsi"],
-                "atr": latest_row["atr"],
-            }
+            # build state summary (DATA)
+            state_summary = build_state_summary(latest_row)
+            live_state["state_summary"] = state_summary
 
-            regime = detect_regime(live_state["state_summary"])
+            # regime
+            regime = detect_regime(state_summary)
             live_state["regime"] = regime
 
-            # AFTER MARKET SUMMARY (IMPORTANT FIX)
-            live_state["rsi"] = latest_row["rsi"]
-            live_state["atr"] = latest_row["atr"]
-            live_state["momentum"] = classify_momentum(latest_row["momentum"])
-            live_state["sma_pct"] = classify_sma_pct(latest_row["sma_pct"])
+            # build market summary (DATA)
+            market_summary = build_market_summary(candle, state_summary, regime)
 
-            live_state["selected_strategy"] = strategy_router(regime)
-
-            print("STATE SUMMARY:", live_state["state_summary"])
-            print("✅ MARKET SUMMARY DONE | REGIME:", regime)
-            print("🚦 REGIME:", regime)
-            print("🎯 ROUTED STRATEGY:", live_state["selected_strategy"])
+            # LLM decision engine
+            run_llm_strategy(llm, market_summary, state_summary, regime)
 
         except Exception as e:
             print("❌ MARKET SUMMARY FAILED:", e)
@@ -163,6 +164,10 @@ async def logics_runner(stream_callback):
         # PHASE 3: METRICS
         # =========================
         update_portfolio_value()
+        update_portfolio_pct()
+
+        check_portfolio_safeguard()
+
         update_win_rate()
         update_equity_curve()
         update_sharpe()

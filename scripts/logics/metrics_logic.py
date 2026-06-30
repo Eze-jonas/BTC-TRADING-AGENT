@@ -13,7 +13,13 @@ def update_portfolio_value():
         live_state.get("cash", 0)
         + live_state.get("btc_holdings", 0) * price
     )
+def update_portfolio_pct():
+    starting = live_state.get("starting_capital", 1)
+    current = live_state.get("portfolio_value", 0)
 
+    pct = (current / starting) * 100 if starting > 0 else 0
+
+    live_state["portfolio_pct"] = pct
 
 # =========================
 # EQUITY CURVE

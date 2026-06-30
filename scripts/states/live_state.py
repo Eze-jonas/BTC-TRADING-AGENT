@@ -29,6 +29,10 @@ live_state = {
     "last_dca_price": 0.0,
     "dca_count": 0,
 
+    # Portfolio safeguard
+    "trading_paused": False,
+    "pause_reason": None,
+
     # will be filled later dynamically
     "state_summary": None,
     "selected_strategy": "DAY",

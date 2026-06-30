@@ -223,6 +223,43 @@ ws.onmessage = function (event) {
         rsiEl.style.color = "#ffffff";
     }
 
+
+    // =========================
+    // LLM STRATEGY
+    // =========================
+    const llmEl = document.getElementById("dbg_llm");
+
+    const llmStrategy = data.llm_strategy ?? "--";
+
+    llmEl.innerText = llmStrategy;
+
+    if (llmStrategy === "DAY") {
+        llmEl.style.color = "#00ff66";   // green (aggressive)
+}
+    else if (llmStrategy === "SWING") {
+        llmEl.style.color = "#00c8ff";   // blue (slower strategy)
+}
+    else {
+        llmEl.style.color = "#ffffff";   // neutral
+}
+
+    // PORTFOLIO HEALTH CHECK CARD//
+    const portfolioPctEl = document.getElementById("portfolio_pct");
+
+    portfolioPctEl.innerText = (data.portfolio_pct ?? 0).toFixed(2) + "%";
+
+    // Optional color logic
+    if (data.portfolio_pct >= 100) {
+        portfolioPctEl.style.color = "#00ff66";   // profit
+        } 
+    else if (data.portfolio_pct < 100) {
+        portfolioPctEl.style.color = "#ff4444";   // loss
+        } 
+    else {
+        portfolioPctEl.style.color = "#ffffff";
+    }
+
+
     // =========================
     // TRANSACTION TABLE
     // =========================

@@ -31,15 +31,15 @@ body {
 
 /* DEBUG PANEL*/
 .debug-panel {
-    height: 220px;
+    height: 210px;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+
 }
 /*TABLES*/
 .table-sm td,
 .table-sm th {
-    font-size: 11px;
+    font-size: 10px;
 }
 
 /*METRICS PANEL*/

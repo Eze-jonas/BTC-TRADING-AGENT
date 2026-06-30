@@ -148,6 +148,7 @@ async def ws(websocket: WebSocket):
                 # METRICS
                 # =========================
                 "portfolio_value": live_state.get("portfolio_value", 0),
+                "portfolio_pct": live_state.get("portfolio_pct", 0),
                 "wins": live_state.get("wins", 0),
                 "losses": live_state.get("losses", 0),
                 "win_rate": live_state.get("win_rate", 0),
@@ -160,6 +161,7 @@ async def ws(websocket: WebSocket):
                 "momentum": live_state.get("momentum_regime", "NEUTRAL"),
                 "sma_pct": live_state.get("sma_regime", "NEUTRAL"),
                 "rsi": live_state.get("rsi", 0),
+                "llm_strategy": live_state.get("llm_strategy", "--"),
                 
                 # =========================
                 # STRATEGY + REGIME
