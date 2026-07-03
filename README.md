@@ -179,10 +179,6 @@ The project includes an interactive dashboard built with FastAPI, HTML, Bootstra
 
 ### Dashboard Screenshot
 
-```markdown
-![Live Dashboard](images/live_dashboard.png)
-```
-
 The dashboard provides:
 
 ### Portfolio Metrics
