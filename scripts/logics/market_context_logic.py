@@ -27,3 +27,4 @@ def build_market_summary(candle, state_summary, regime):
         "cash": live_state.get("cash", 10000),
         "btc": live_state.get("btc_holdings", 0),
     }
+    

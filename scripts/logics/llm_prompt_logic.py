@@ -1,27 +1,20 @@
 import json
 import ollama
+from scripts.configurations.parameter_configuration import config
 
 
 class LLMWrapper:
-    def __init__(self, model="llama3.1"):
-        self.model = model
+    def __init__(self, model=None):
+        self.model = model or config["llm_model"]
 
     def choose_strategy(self, market_summary):
 
         prompt = f"""
 You are an expert Bitcoin trading strategist.
 
-Current BTC Price: {market_summary["price"]}
+Current Market Summary:
 
-Momentum: {market_summary["momentum"]}
-SMA: {market_summary["sma"]}
-RSI: {market_summary["rsi"]:.2f}
-ATR: {market_summary["atr"]:.2f}
-Market Regime: {market_summary["regime"]}
-
-Current Position: {market_summary["position"]}
-Cash Available: {market_summary["cash"]}
-BTC Holdings: {market_summary["btc"]}
+{json.dumps(market_summary, indent=2)}
 
 Choose the most appropriate trading strategy.
 
@@ -54,23 +47,28 @@ Return ONLY valid JSON:
                 }
             ],
             options={
-                "temperature": 0
+                "temperature": config["llm_temperature"]
             }
         )
 
         raw_output = response["message"]["content"]
 
-        # safe JSON parsing
+        # Safe JSON parsing
         try:
             result = json.loads(raw_output)
         except Exception:
-            # fallback if model returns extra text
             import re
+
             json_match = re.search(r"\{.*\}", raw_output, re.DOTALL)
-            result = json.loads(json_match.group()) if json_match else {
-                "strategy": "DAY",
-                "reason": "fallback due to parsing error"
-            }
+
+            result = (
+                json.loads(json_match.group())
+                if json_match
+                else {
+                    "strategy": "DAY",
+                    "reason": "fallback due to parsing error"
+                }
+            )
 
         print("\n==============================")
         print("LLM STRATEGY DECISION")
